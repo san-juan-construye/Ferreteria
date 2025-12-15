@@ -1,0 +1,207 @@
+# Configuración de Netlify para San Juan Construye
+
+[build]
+  # Directorio de publicación
+  publish = "."
+  
+  # Comando de build (vacío para sitios estáticos)
+  command = ""
+
+[build.environment]
+  # Versión de Node.js (si es necesario para build)
+  NODE_VERSION = "18"
+
+# Headers de seguridad y performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Habilitar HTTPS
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    
+    # Prevenir clickjacking
+    X-Frame-Options = "DENY"
+    
+    # Prevenir MIME type sniffing
+    X-Content-Type-Options = "nosniff"
+    
+    # Habilitar XSS protection
+    X-XSS-Protection = "1; mode=block"
+    
+    # Referrer policy
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # Content Security Policy básica
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://docs.google.com"
+
+# Headers específicos para archivos estáticos
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+  for = "*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+# Redirecciones para SPA (Single Page Application)
+[[redirects]]
+  from = "/productos"
+  to = "/productos.html"
+  status = 200
+
+[[redirects]]
+  from = "/carrito"
+  to = "/carrito.html"
+  status = 200
+
+[[redirects]]
+  from = "/confirmacion"
+  to = "/confirmacion.html"
+  status = 200
+
+# Redirect para URLs no encontradas
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Configuración de dominio personalizado (opcional)
+# [[headers]]
+#   for = "https://tudominio.com/*"
+#   [headers.values]
+#     # Configuraciones específicas del dominio
+#     Domain = "tudominio.com"
+
+# Configuración de plugins (opcional)
+# [[plugins]]
+#   package = "@netlify/plugin-lighthouse"
+#   
+#   [plugins.inputs.audits]
+#     performance = true
+#     accessibility = true
+#     best-practices = true
+#     seo = true
+
+# Configuración de funciones serverless (si es necesario)
+# [functions]
+#   directory = "netlify/functions"
+#   node_bundler = "esbuild"
+
+# Configuración de procesamiento de formularios (si es necesario)
+# [[forms]]
+#   name = "newsletter"
+#   path = "/newsletter-success"
+#   action = "/newsletter-success"
+#   method = "POST"
+# 
+# [[forms]]
+#   name = "contact"
+#   path = "/contact-success"
+#   action = "/contact-success"
+#   method = "POST"
+
+# Configuración de redirects para SEO
+# [[redirects]]
+#   from = "/productos/"
+#   to = "/productos"
+#   status = 301
+# 
+# [[redirects]]
+#   from = "/carrito/"
+#   to = "/carrito"
+#   status = 301
+# 
+# [[redirects]]
+#   from = "/confirmacion/"
+#   to = "/confirmacion"
+#   status = 301
+
+# Configuración de environment variables (desde dashboard de Netlify)
+# [context.production.environment]
+#   GOOGLE_SHEETS_API_KEY = "tu-api-key"
+#   GOOGLE_SHEETS_URL = "tu-url-de-sheets"
+# 
+# [context.branch-deploy.environment]
+#   GOOGLE_SHEETS_API_KEY = "tu-api-key-dev"
+#   GOOGLE_SHEETS_URL = "tu-url-de-sheets-dev"
+
+# Configuración de headers específicos para Google Fonts
+[[headers]]
+  for = "https://fonts.googleapis.com/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "https://fonts.gstatic.com/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+
+# Configuración para mejorar Core Web Vitals
+[[headers]]
+  for = "*.html"
+  [headers.values]
+    # Preload recursos críticos
+    Link = '</styles/main.css>; rel=preload; as=style'
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    # Preload fuentes
+    Link = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap; rel=preload; as=style'
+
+# Configuración de security headers adicionales para producción
+[context.production.headers.values]
+  # Content Security Policy más estricta para producción
+  Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://docs.google.com; frame-ancestors 'none'; base-uri 'self'"
+  
+  # Permissions Policy
+  Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Configuración para deploys de branch
+[context.branch-deploy.headers.values]
+  # Headers más permisivos para desarrollo
+  Content-Security-Policy = "default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://docs.google.com"
+
+# Configuración de build para diferentes contextos
+[context.deploy-preview]
+  command = ""
+  publish = "."
+  
+[context.deploy-preview.headers.values]
+  # Headers para previews de deploy
+  Cache-Control = "no-cache"
+
+# Configuración de plugins (ejemplo con Lighthouse)
+# [[plugins]]
+#   package = "@netlify/plugin-lighthouse"
+#   
+#   [plugins.inputs]
+#     performance = 0.9
+#     accessibility = 0.9
+#     best-practices = 0.9
+#     seo = 0.9
+#     output_path = "lighthouse-report.html"
+
+# Configuración de redirects condicionales
+# [[redirects]]
+#   from = "/old-page"
+#   to = "/new-page"
+#   status = 301
+#   force = true
+
+# Configuración de split testing (A/B testing)
+# [[split_test]]
+#   name = "header-test"
+#   paths = ["/", "/productos"]
+#   percentages = { "/" = 50, "/productos" = 50 }

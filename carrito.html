@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Pedidos - San Juan Construye</title>
+    <meta name="description" content="Revisa tu pedido antes de enviarlo. San Juan Construye - Sistema de pedidos online.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="stylesheet" href="styles/cart.css">
+    <link rel="stylesheet" href="styles/customer-form.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <!-- Logo -->
+                <a href="index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 21h18M4 21V8l8-3 8 3v13M9 21v-8h6v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="logo-text">San Juan Construye</span>
+                </a>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Buscar productos...">
+                    <button class="search-btn" id="searchBtn">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                            <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Cart -->
+                <div class="cart-container">
+                    <button class="cart-btn" id="cartBtn">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1 1 0 4m0-4a2 2 0 1 1 0 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="cart-badge" id="cartBadge">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Info Banner -->
+    <div class="info-banner">
+        <div class="container">
+            <div class="banner-content">
+                <svg class="banner-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="banner-text">
+                    <strong>Recordatorio:</strong> Este es un sistema de pedidos. El pago se coordina directamente al confirmar tu pedido.
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <nav class="breadcrumb-nav">
+                <a href="index.html">Inicio</a>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-current">Carrito de Pedidos</span>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Cart Section -->
+    <section class="cart-section">
+        <div class="container">
+            <div class="cart-layout">
+                <!-- Cart Items -->
+                <div class="cart-items">
+                    <div class="cart-header">
+                        <h1 class="cart-title">Carrito de Pedidos</h1>
+                        <p class="cart-subtitle">Revisá tu pedido antes de enviarlo</p>
+                    </div>
+
+                    <!-- Empty Cart -->
+                    <div class="empty-cart" id="emptyCart" style="display: none;">
+                        <div class="empty-cart-content">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="9" cy="21" r="1" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="20" cy="21" r="1" stroke="currentColor" stroke-width="2"/>
+                                <path d="m1 1 4 4 16 4-4 16H5L1 1z" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <h3>Tu carrito está vacío</h3>
+                            <p>Agregá algunos productos para generar tu pedido</p>
+                            <button class="btn-primary" onclick="window.location.href='productos.html'">
+                                Explorar Productos
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cart Items List -->
+                    <div class="cart-items-list" id="cartItemsList">
+                        <!-- Los items del carrito se cargarán dinámicamente -->
+                    </div>
+
+                    <!-- Cart Actions -->
+                    <div class="cart-actions" id="cartActions" style="display: none;">
+                        <div class="cart-actions-left">
+                            <button class="btn-secondary" onclick="cart.clearCart()">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <polyline points="3,6 5,6 21,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="m19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Vaciar Carrito
+                            </button>
+                            <button class="btn-secondary" onclick="window.location.href='productos.html'">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Seguir Comprando
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="order-summary" id="orderSummary">
+                    <div class="summary-card">
+                        <h3 class="summary-title">Resumen del Pedido</h3>
+                        
+                        <!-- Order Items -->
+                        <div class="summary-items" id="summaryItems">
+                            <!-- Los items se cargarán dinámicamente -->
+                        </div>
+                        
+                        <!-- Order Totals -->
+                        <div class="summary-totals">
+                            <div class="summary-row">
+                                <span>Subtotal:</span>
+                                <span id="subtotal">$0</span>
+                            </div>
+                            <div class="summary-row" id="savingsRow" style="display: none;">
+                                <span>Ahorros:</span>
+                                <span id="savings">-$0</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total:</span>
+                                <span id="total">$0</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Delivery Info -->
+                        <div class="delivery-info">
+                            <div class="delivery-option">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <polyline points="3.27,6.96 12,12.01 20.73,6.96" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <line x1="12" y1="22.08" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <div>
+                                    <strong>Retiro en Tienda</strong>
+                                    <p>Av. San Juan 1234, Buenos Aires</p>
+                                </div>
+                            </div>
+                            <div class="delivery-option">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <div>
+                                    <strong>Consultar Envío</strong>
+                                    <p>Coordiná por WhatsApp o teléfono</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Checkout Button -->
+                        <button class="checkout-btn" id="checkoutBtn" onclick="cart.openCustomerForm()" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1 1 0 4m0-4a2 2 0 1 1 0 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Continuar con Datos del Cliente
+                        </button>
+                        
+                        <p class="checkout-note">
+                            Al confirmar tu pedido, nos pondremos en contacto para coordinar el pago y la entrega.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recently Viewed -->
+    <section class="recently-viewed">
+        <div class="container">
+            <h2 class="section-title">Productos que podrían interesarte</h2>
+            <div class="products-grid" id="recommendedProducts">
+                <!-- Los productos recomendados se cargarán dinámicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2 class="newsletter-title">¡No te pierdas nuestras ofertas!</h2>
+                <p class="newsletter-text">Suscribite para recibir las últimas promociones y novedades</p>
+                <div class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Tu email">
+                    <button class="newsletter-btn">Suscribirse</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <svg class="footer-logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 21h18M4 21V8l8-3 8 3v13M9 21v-8h6v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="footer-logo-text">San Juan Construye</span>
+                    </div>
+                    <p class="footer-description">
+                        Tu ferretería de confianza. Generá tu pedido online y coordiná el retiro en nuestra tienda.
+                    </p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Contacto</h3>
+                    <div class="footer-contact">
+                        <div class="contact-item">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span>Av. San Juan 1234, Buenos Aires</span>
+                        </div>
+                        <div class="contact-item">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>+54 11 4567-8900</span>
+                        </div>
+                        <div class="contact-item">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>info@sanjuanconstruye.com</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Horarios</h3>
+                    <div class="footer-schedule">
+                        <div class="schedule-item">
+                            <span class="schedule-day">Lunes - Viernes:</span>
+                            <span class="schedule-time">8:00 - 18:00</span>
+                        </div>
+                        <div class="schedule-item">
+                            <span class="schedule-day">Sábados:</span>
+                            <span class="schedule-time">8:00 - 13:00</span>
+                        </div>
+                        <div class="schedule-item">
+                            <span class="schedule-day">Domingos:</span>
+                            <span class="schedule-time">Cerrado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 San Juan Construye. Todos los derechos reservados.</p>
+                <div class="footer-links">
+                    <a href="#">Términos y Condiciones</a>
+                    <a href="#">Política de Privacidad</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Customer Form Modal -->
+    <div class="modal-overlay" id="customerModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title">Datos del Cliente</h2>
+                <p class="modal-subtitle">Completá tus datos para procesar el pedido</p>
+            </div>
+            
+            <div class="modal-body">
+                <form id="customerForm" class="customer-form">
+                    <!-- WhatsApp Info -->
+                    <div class="whatsapp-info">
+                        <div class="whatsapp-info-title">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>Envío Automático por WhatsApp</span>
+                        </div>
+                        <div class="whatsapp-info-text">
+                            Al completar el formulario, enviaremos automáticamente tu pedido por WhatsApp y nos pondremos en contacto para coordinar.
+                        </div>
+                    </div>
+                    
+                    <!-- Personal Information -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nombre" class="form-label required">Nombre completo</label>
+                            <input type="text" id="nombre" name="nombre" class="form-input" required 
+                                   placeholder="Juan Pérez">
+                            <div class="form-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="telefono" class="form-label required">Teléfono</label>
+                            <input type="tel" id="telefono" name="telefono" class="form-input" required 
+                                   placeholder="11 1234-5678">
+                            <div class="form-help">Formato: 11 1234-5678 o +54 11 1234-5678</div>
+                            <div class="form-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email (opcional)</label>
+                            <input type="email" id="email" name="email" class="form-input" 
+                                   placeholder="juan@email.com">
+                            <div class="form-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="localidad" class="form-label required">Localidad</label>
+                            <input type="text" id="localidad" name="localidad" class="form-input" required 
+                                   placeholder="Buenos Aires">
+                            <div class="form-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="direccion" class="form-label required">Dirección completa</label>
+                        <input type="text" id="direccion" name="direccion" class="form-input" required 
+                               placeholder="Av. San Juan 1234, Piso 2, Depto B">
+                        <div class="form-help">Incluye calle, número, piso, depto, referencias</div>
+                        <div class="form-error"></div>
+                    </div>
+                    
+                    <!-- Delivery Method -->
+                    <div class="form-group full-width">
+                        <label class="form-label required">Método de entrega</label>
+                        <div class="delivery-options">
+                            <label class="delivery-option selected">
+                                <input type="radio" name="metodoEntrega" value="retiro" checked>
+                                <div class="delivery-option-content">
+                                    <div class="delivery-option-title">📦 Retiro en tienda</div>
+                                    <div class="delivery-option-description">Retirás en Av. San Juan 1234, Buenos Aires</div>
+                                </div>
+                            </label>
+                            
+                            <label class="delivery-option">
+                                <input type="radio" name="metodoEntrega" value="envio">
+                                <div class="delivery-option-content">
+                                    <div class="delivery-option-title">🚛 Envío a domicilio</div>
+                                    <div class="delivery-option-description">Enviamos a tu dirección (consultar costo)</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Method (only for delivery) -->
+                    <div class="form-group full-width payment-section" style="display: none;">
+                        <label class="form-label required">Método de pago</label>
+                        <div class="payment-options">
+                            <label class="payment-option selected">
+                                <input type="radio" name="metodoPago" value="efectivo" checked>
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="1" y1="10" x2="23" y2="10" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                <span class="payment-option-label">Efectivo</span>
+                            </label>
+                            
+                            <label class="payment-option">
+                                <input type="radio" name="metodoPago" value="transferencia">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="2" y="5" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="2" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                <span class="payment-option-label">Transferencia</span>
+                            </label>
+                            
+                            <label class="payment-option">
+                                <input type="radio" name="metodoPago" value="tarjeta">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="1" y1="10" x2="23" y2="10" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                <span class="payment-option-label">Tarjeta</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Comments -->
+                    <div class="form-group full-width">
+                        <label for="comentarios" class="form-label">Comentarios adicionales</label>
+                        <textarea id="comentarios" name="comentarios" class="form-textarea" 
+                                  placeholder="Horarios preferidos, referencias de entrega, etc."></textarea>
+                        <div class="form-error"></div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" data-action="close-customer-form">
+                    Cancelar
+                </button>
+                <button type="submit" form="customerForm" class="btn-submit">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Confirmar Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/products.js"></script>
+    <script src="scripts/google-sheets-integration.js"></script>
+    <script src="scripts/whatsapp-integration.js"></script>
+    <script src="scripts/customer-form.js"></script>
+    <script src="scripts/cart.js"></script>
+</body>
+</html>
